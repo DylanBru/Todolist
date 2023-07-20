@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,3 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/tasks', [TaskController::class, 'browse']);
 Route::get('/tasks/{id}', [TaskController::class, 'find']);
+Route::get('/categories', [CategoryController::class, 'browse']);
+Route::get('/categories/{id}', [CategoryController::class, 'find']);
+Route::get('/tags', [TagController::class, 'browse']);
+Route::get('/tags/{id}', [TagController::class, 'find']);
