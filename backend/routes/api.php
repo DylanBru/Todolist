@@ -21,9 +21,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/tasks', [TaskController::class, 'browse']);
-Route::get('/tasks/{id}', [TaskController::class, 'find']);
-Route::get('/categories', [CategoryController::class, 'browse']);
-Route::get('/categories/{id}', [CategoryController::class, 'find']);
-Route::get('/tags', [TagController::class, 'browse']);
-Route::get('/tags/{id}', [TagController::class, 'find']);
+
+Route::apiResource('tasks', TaskController::class);
+Route::apiResource('categories', CategoryController::class);
+Route::apiResource('tags', TagController::class);
+
+// Route::get('/tasks', [TaskController::class, 'browse']);
+// Route::get('/tasks/{id}', [TaskController::class, 'find']);
+// Route::get('/categories', [CategoryController::class, 'browse']);
+// Route::get('/categories/{id}', [CategoryController::class, 'find']);
+// Route::get('/tags', [TagController::class, 'browse']);
+// Route::get('/tags/{id}', [TagController::class, 'find']);
