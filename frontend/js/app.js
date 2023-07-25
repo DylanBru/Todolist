@@ -14,6 +14,7 @@ function getListTasks() {
             for (const task of listTasks) {
                 // création des éléments
                 const liToAdd = document.createElement('li');
+                liToAdd.setAttribute("id", task['id']);
                 const pToAdd = document.createElement('p');
                 pToAdd.textContent = task['title'];
                 const deleteToAdd = document.createElement('div');
@@ -28,6 +29,17 @@ function getListTasks() {
                 container.append(liToAdd);
             }
         })
-}
+    }
+    
+
+    //idées pour supprimer tache :
+    // function deleteTask() {
+    //     sélectionner tous les boutons "delete"
+    //     eventlistnere sur les boutons "poubelles" qui active le fetch en delete 
+    //     sélectionner tous les "li"
+    //     sélectionner le bon "li" à supprimer en comparant avec le bon delete via le chemin du DOM "firstElementChild[id]"
+    // }
+    
 
 getListTasks();
+// deleteTask();
