@@ -14,7 +14,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return Task::all();
+        return Task::all()->load(['category', 'tags']);
     }
 
     /**
@@ -49,7 +49,7 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        return Task::find($id);
+        return Task::find($id)->load('category');
     }
 
     /**

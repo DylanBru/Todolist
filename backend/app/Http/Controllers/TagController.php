@@ -14,7 +14,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        return Tag::all();
+        return Tag::all()->load('tasks');
     }
 
     /**
@@ -49,7 +49,7 @@ class TagController extends Controller
      */
     public function show($id)
     {
-        return Tag::find($id);
+        return Tag::find($id)->load('tasks');
     }
 
     /**

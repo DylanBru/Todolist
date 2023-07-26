@@ -80,7 +80,7 @@ const createTaskElement = (task) => {
         taskToDelete = event.currentTarget.parentNode;
         // récupération de l'id
         taskToDeleteId = taskToDelete.id;
-        console.log(taskToDeleteId)
+        // console.log(taskToDeleteId)
         deleteTask(taskToDeleteId)
         .then((res) => {
             console.info(res)

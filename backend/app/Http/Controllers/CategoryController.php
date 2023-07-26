@@ -14,7 +14,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Category::all();
+        return Category::all()->load('tasks');
     }
 
     /**
@@ -49,7 +49,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        return Category::find($id);
+        return Category::find($id)->tasks;
     }
 
     /**
