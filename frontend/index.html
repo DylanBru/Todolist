@@ -17,7 +17,7 @@
   <main>
 
     <div class="create-task-container">
-      <button>nouvelle tâche</button>
+      <button id="createTask">nouvelle tâche</button>
     </div>
 
     <div class="message success" hidden>
@@ -46,12 +46,12 @@
     </ul>
 
     <div class="modal-dialog">
-      <form>
+      <form action="">
         <h2>nouvelle tâche</h2>
         <label for="task-title" class="screen-reader-only">titre de la tâche</label>
         <input name= "id" id="task-id" type="hidden">
         <input name= "title" id="task-title" placeholder="titre de la tâche..." type="text" required>
-        <button>ajouter</button>
+        <button id="submit">ajouter</button>
       </form>
     </div>
 
