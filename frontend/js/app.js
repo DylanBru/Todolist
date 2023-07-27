@@ -70,6 +70,11 @@ const createTaskElement = (task) => {
 
     const pToAdd = document.createElement('p');
     pToAdd.textContent = task['title'];
+    const emToAdd = document.createElement('em');
+    emToAdd.textContent = task['category']['name'];
+    emToAdd.classList.add("position-absolute");
+    emToAdd.classList.add("start-50");
+    pToAdd.append(emToAdd);
     liToAdd.append(pToAdd);
 
     const deleteToAdd = document.createElement('div');
@@ -107,6 +112,7 @@ window.addEventListener('DOMContentLoaded', function(){
     .then(listTasks => {
         deleteContainer();
         for (const task of listTasks) {
+            console.log(task)
             createTaskElement(task);
     }})
     .catch(() => {
