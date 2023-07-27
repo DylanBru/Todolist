@@ -80,6 +80,7 @@ const showFormAddTask = function(){
         document.querySelector(".create-task-container").classList.add("d-none");
         document.querySelector(".tasklist").classList.add("d-none");
         document.querySelector(".modal-dialog").classList.add("show");
+        createSelect()
     },
 )}
 
@@ -109,6 +110,29 @@ const showListTasks = function()
     });
     }
 
+// Création d'un élément select pour le formulaire avec choix des catégories
+const createSelect = function()
+{
+    getListTasks()
+    .then(listTasks => 
+        {
+        const selectToAdd = document.createElement("select");
+            for (const task of listTasks) {
+            const optionToAdd = document.createElement("option");
+            optionToAdd.setAttribute("value", task['category']['id']);
+            optionToAdd.textContent = task['category']['name'];
+            selectToAdd.append(optionToAdd);
+        }
+        console.log(selectToAdd)
+        console.log(document.querySelector("#task-title"))
+        console.log(document.querySelector("form").append(selectToAdd));
+    })
+    .catch(() => 
+    {
+        console.log('Erreur de requête lors de la récupération des tâches pour la création du select');
+    });
+}    
+
 
 window.addEventListener('DOMContentLoaded', function (){
     // Gestion de l'affichage de la liste des tâches
@@ -130,18 +154,10 @@ document.querySelector("#submit").addEventListener('click', () =>
         postNewTask(newTaskTitle)
         .then (newTask => 
             {
+                console.info(newTask);
                 unShowFormAddTask();
                 showListTasks();
                 document.querySelector(".success").removeAttribute("hidden");
-
-                console.info(newTask);
-                
-                // Gestion de l'affichage du formulaire d'ajout de tâche
-                // showFormAddTask();
-                // location.reload();
-                // createTaskElement(newTask)
-                // document.querySelector(".success").removeAttribute("hidden");
-                // Désactiver l'affichafe du formulaire pour retourner sur la liste des tâches
             })
         .catch(() => 
         {
