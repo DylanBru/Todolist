@@ -63,7 +63,7 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $task= Task::find($id);
+        $task= Task::find($id)->load('category');
         // Si on n'a rien, on ne peut pas faire de mise à jour
         // 404 : not found
         if (!$task) {
@@ -72,13 +72,15 @@ class TaskController extends Controller
 
         // Extraction des valeurs passées de la body de la requête
         $title = $request->input('title');
+        $category_id = $request->input('category_id');
 
         $task->title = $title;
+        $task->category_id = $category_id;
 
         // On sauvegarde, puis on gère la réponse avec le code HTTP qui convient
         // 500 : Internal Server Error
         if ($task->save()) {
-            return response()->json($task);
+            return response()->json($task->load('category'));
         } else {
             return response(null, 500);
         }

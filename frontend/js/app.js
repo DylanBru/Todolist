@@ -15,8 +15,23 @@ const getCategories = async function (){
     return categories
 }
 
-const deleteTask = function(taskToDeleteId){
+const deleteTask = function(taskToDeleteId, ){
     return fetch('http://127.0.0.1:8000/api/tasks/' + taskToDeleteId, {method: 'DELETE'})
+}
+
+const editTask = async function(taskToEditId, editedTaskTitle, editedTaskCategoryId){
+    const response = await fetch('http://127.0.0.1:8000/api/tasks/' + taskToEditId, {
+        method:"PUT",
+        headers: {
+            'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify({
+            title: editedTaskTitle,
+            category_id: editedTaskCategoryId
+         })
+    });
+    const task = await response.json();
+    return task;
 }
 
 const postNewTask = async function(newTaskTitle, newTaskCategoryId){
@@ -75,21 +90,63 @@ const createTaskElement = (task) => {
     const editToAdd = document.createElement('div');
     editToAdd.classList.add("edit");
     liToAdd.append(editToAdd);
+    editToAdd.addEventListener('click', event => 
+    {
+        taskToEdit = event.currentTarget.parentNode;
+        taskToEditId = taskToEdit.id;
+        editTaskTitle = task['title'];
+        editTaskCategoryId = task['category']['id'];
+        // Affichage du form avec valeurs par défauts pré-sélectionnées
+        showEditionForm();
+        // Lancer la requête d'édition
+        document.querySelector("#submit").addEventListener('click', () => 
+        {
+            document.querySelector('form').addEventListener('submit', event => 
+            {
+                event.preventDefault();
+            })
+            const editedTaskTitle = document.querySelector("#task-title").value;
+            const editedTaskCategoryId = document.querySelector("#task-category").value;
+            // console.log(editedTaskCategoryId)
+            editTask(taskToEditId, editedTaskTitle, editedTaskCategoryId)
+            .then((result) => {
+                console.log(result);
+                unShowFormAddTask();
+                showListTasks();
+                document.querySelector(".success").removeAttribute("hidden");
+            })
+            .catch(() => {
+                console.log("erreur lors de l'édition de la tâche")
+            })
+        })
+    })
 
     container.append(liToAdd);
 }
 
+
+// Afficher le formulaire d'édition d'une tâche
+const showEditionForm = function(){
+    formElements();
+    document.querySelector("form h2").textContent=("édition de la tâche : " + editTaskTitle)
+    document.querySelector("form button").textContent="éditer"
+    document.querySelector("#task-category").value=editTaskCategoryId
+    document.querySelector("#task-title").value=editTaskTitle
+}
+
 // Afficher le formulaire d'ajout d'une tâche
-const showFormAddTask = function(){
+const formElements = function() {
+    document.querySelector("header").classList.add("muted");
+    document.querySelector(".create-task-container").classList.add("d-none");
+    document.querySelector(".tasklist").classList.add("d-none");
+    document.querySelector(".modal-dialog").classList.add("show");
+}
+const showForm = function() {
     const newTaskButton = document.querySelector("#createTask");
 
     newTaskButton.addEventListener('click', () => 
     {
-        document.querySelector("header").classList.add("muted");
-        document.querySelector(".create-task-container").classList.add("d-none");
-        document.querySelector(".tasklist").classList.add("d-none");
-        document.querySelector(".modal-dialog").classList.add("show");
-        // createSelect()
+        formElements()
     },
 )}
 
@@ -137,17 +194,19 @@ window.addEventListener('DOMContentLoaded', function (){
         console.log("Impossible de récupérer les catégories");
     });
     // Gestion de l'affichage du formulaire d'ajout de tâche
-    showFormAddTask();
+    showForm();
 })
 
-// Gestion d'ajout d'une tâche
+// Gestion d'event pour formulaires d'ajout et de modif
 document.querySelector("#submit").addEventListener('click', () => 
+{
+    document.querySelector('form').addEventListener('submit', event => 
     {
-        document.querySelector('form').addEventListener('submit', event => 
-        {
-            event.preventDefault();
-        });
-
+        event.preventDefault();
+    });
+    
+    // Gestion d'ajout d'une tâche
+    if (document.querySelector("form h2").textContent === "nouvelle tâche") {
         newTaskTitle = document.querySelector("#task-title").value;
         newTaskCategoryId = document.querySelector("#task-category").value;
         // console.log(newTaskCategoryId);
@@ -164,4 +223,11 @@ document.querySelector("#submit").addEventListener('click', () =>
         {
             console.log('Erreur de requête lors de l\'ajout de la tâche');
         });
-    })
+    }
+
+    // Gestion de la modification d'une tâche
+    else {
+
+    }
+})
+
