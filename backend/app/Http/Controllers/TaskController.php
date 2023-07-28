@@ -26,16 +26,18 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $title = $request->input('title');
+        $category_id = $request->input('category_id');
 
         // On crée une nouvelle instance, puis on lui définit la propriété title
         $task = new Task();
         $task->title = $title;
+        $task->category_id = $category_id;
 
         // On sauvegarde, puis on gère la réponse avec le code HTTP qui convient
         // 201 : Created
         // 500 : Internal Server Error
         if ($task->save()) {
-            return response()->json($task, 201);
+            return response()->json($task->load('category'), 201);
         } else {
             return response(null, 500);
         }

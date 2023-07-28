@@ -9,20 +9,29 @@ const getListTasks = function(){
     })
 }
 
+const getCategories = async function (){
+    const request = await fetch("http://127.0.0.1:8000/api/categories");
+    const categories = await request.json();
+    return categories
+}
+
 const deleteTask = function(taskToDeleteId){
     return fetch('http://127.0.0.1:8000/api/tasks/' + taskToDeleteId, {method: 'DELETE'})
 }
 
-const postNewTask = async function(newTaskTitle){
+const postNewTask = async function(newTaskTitle, newTaskCategoryId){
     const request = await fetch('http://localhost:8000/api/tasks', {
         method: 'POST',
         headers: {
             'Content-Type' : 'application/json'
         },
         body: JSON.stringify({
-           title: newTaskTitle 
-        })});
+           title: newTaskTitle,
+           category_id: newTaskCategoryId
+        })
+    });
     const tasks = await request.json();
+    console.log(tasks)
     return tasks;
 }
 
@@ -55,7 +64,7 @@ const createTaskElement = (task) => {
         // console.log(taskToDeleteId)
         deleteTask(taskToDeleteId)
         .then((res) => {
-            console.info(res)
+            // console.info(res)
             taskToDelete.remove()
             }
             )
@@ -80,7 +89,7 @@ const showFormAddTask = function(){
         document.querySelector(".create-task-container").classList.add("d-none");
         document.querySelector(".tasklist").classList.add("d-none");
         document.querySelector(".modal-dialog").classList.add("show");
-        createSelect()
+        // createSelect()
     },
 )}
 
@@ -110,33 +119,23 @@ const showListTasks = function()
     });
     }
 
-// Création d'un élément select pour le formulaire avec choix des catégories
-const createSelect = function()
-{
-    getListTasks()
-    .then(listTasks => 
-        {
-        const selectToAdd = document.createElement("select");
-            for (const task of listTasks) {
-            const optionToAdd = document.createElement("option");
-            optionToAdd.setAttribute("value", task['category']['id']);
-            optionToAdd.textContent = task['category']['name'];
-            selectToAdd.append(optionToAdd);
-        }
-        console.log(selectToAdd)
-        console.log(document.querySelector("#task-title"))
-        console.log(document.querySelector("form").append(selectToAdd));
-    })
-    .catch(() => 
-    {
-        console.log('Erreur de requête lors de la récupération des tâches pour la création du select');
-    });
-}    
-
 
 window.addEventListener('DOMContentLoaded', function (){
     // Gestion de l'affichage de la liste des tâches
     showListTasks();
+    // Gestion de la récupération des catégories
+    getCategories().then((categories) => {
+        categories.forEach((category) => {
+            //Insérer au niveau du "select" mes catégories
+            const select = document.querySelector('#task-category');
+            const newOption = document.createElement('option');
+            newOption.setAttribute('value', category.id);
+            newOption.textContent = category.name;
+            select.append(newOption);
+        });
+    }).catch(() => {
+        console.log("Impossible de récupérer les catégories");
+    });
     // Gestion de l'affichage du formulaire d'ajout de tâche
     showFormAddTask();
 })
@@ -150,8 +149,10 @@ document.querySelector("#submit").addEventListener('click', () =>
         });
 
         newTaskTitle = document.querySelector("#task-title").value;
+        newTaskCategoryId = document.querySelector("#task-category").value;
+        // console.log(newTaskCategoryId);
         // console.log(newTaskTitle);
-        postNewTask(newTaskTitle)
+        postNewTask(newTaskTitle, newTaskCategoryId)
         .then (newTask => 
             {
                 console.info(newTask);
